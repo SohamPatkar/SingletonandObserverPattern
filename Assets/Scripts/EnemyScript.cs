@@ -5,6 +5,7 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private EnemyDetails enemyDetails;
     private Transform playerTransform;
     private float speed;
+    EnemySpawner enemySpawner = EnemySpawner.EnemySpawnerInstance;
     private void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -25,11 +26,14 @@ public class EnemyScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+
             PlayerScript.InstancePlayerAttributes.TakeDamage(enemyDetails.enemyDamage);
+            enemySpawner.enemyCounter--;
             Destroy(gameObject);
         }
         else if (other.gameObject.CompareTag("Obstacle"))
         {
+            enemySpawner.enemyCounter--;
             Destroy(gameObject);
         }
     }

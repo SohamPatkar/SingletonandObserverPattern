@@ -1,23 +1,25 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
+
 public class EnemySpawner : MonoBehaviour
 {
-    public static EnemySpawner Instance { get; set; }
-
+    public static EnemySpawner EnemySpawnerInstance { get; set; }
+    public event Action<int> activeEnemyCount = delegate { };
     [SerializeField] private GameObject[] enemyPrefab;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private float spawnInterval = 2.0f;
     [SerializeField] private int enemyCount;
-    private int enemyCounter;
+    public int enemyCounter;
     private bool spawningActive = true;
     private int randomSpawnPoint;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (EnemySpawnerInstance == null)
         {
-            Instance = this;
+            EnemySpawnerInstance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -42,12 +44,13 @@ public class EnemySpawner : MonoBehaviour
             while (spawningActive)
             {
                 yield return new WaitForSeconds(spawnInterval);
-                randomSpawnPoint = Mathf.RoundToInt(Random.Range(0, spawnPoints.Length));
+                randomSpawnPoint = Mathf.RoundToInt(UnityEngine.Random.Range(0, spawnPoints.Length));
                 if (spawningActive)
                 {
-                    int enemyIndex = Mathf.RoundToInt(Random.Range(0, 2));
+                    int enemyIndex = Mathf.RoundToInt(UnityEngine.Random.Range(0, 2));
                     Instantiate(enemyPrefab[enemyIndex], spawnPoints[randomSpawnPoint]);
                     enemyCounter++;
+                    activeEnemyCount.Invoke(enemyCounter);
                     spawningActive = false;
                 }
             }

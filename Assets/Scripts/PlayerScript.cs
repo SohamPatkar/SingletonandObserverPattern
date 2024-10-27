@@ -8,6 +8,7 @@ public class PlayerScript : MonoBehaviour
     private int health = 100;
     private int maxHealth = 100;
     public event Action<int> Damage = delegate { };
+    public event Action Dead = delegate { };
     private void Awake()
     {
         if (InstancePlayerAttributes == null)
@@ -22,6 +23,11 @@ public class PlayerScript : MonoBehaviour
 
     public int getHealth()
     {
+        if (health <= 0)
+        {
+            health = 0;
+            Dead.Invoke();
+        }
         return health;
     }
 
@@ -30,6 +36,7 @@ public class PlayerScript : MonoBehaviour
         if (health <= 0)
         {
             health = 0;
+            Dead.Invoke();
         }
         else if (health > 0)
         {
